@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
-function LastSalePage() {
-  const [sales, setSales] = useState();
+function LastSalePage(props) {
+  const [sales, setSales] = useState(props.sales);
   // const [isLoading, setIsLoading] = useState(false);
 
   const dataURL =
@@ -48,7 +48,7 @@ function LastSalePage() {
     return <p>Fail to load!</p>;
   }
 
-  if (!data || !sales) {
+  if (!data && !sales) {
     return <p>Loading...</p>;
   }
 
@@ -64,4 +64,22 @@ function LastSalePage() {
     </ul>
   );
 }
+
+export async function getStaticProps() {
+  return fetch("https://react-dummydb-default-rtdb.firebaseio.com/sales.json")
+    .then((response) => response.json())
+    .then((data) => {
+      const transformedSales = [];
+
+      for (const key in data) {
+        transformedSales.push({
+          id: key,
+          username: data[key].username,
+          volume: data[key].volume,
+        });
+      }
+      return { props: { sales: transformedSales } };
+    });
+}
+
 export default LastSalePage;
