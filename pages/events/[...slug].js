@@ -13,6 +13,13 @@ function FilterEventPage(props) {
   const router = useRouter();
   const filterData = router.query.slug;
 
+  let pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta name="description" content="A list of filtered events." />
+    </Head>
+  );
+
   const dataURL =
     "https://react-dummydb-default-rtdb.firebaseio.com/events.json";
   const fetcher = (url) => fetch(url).then((res) => res.json());
@@ -33,13 +40,28 @@ function FilterEventPage(props) {
   }, [data]);
 
   if (!loadedEvents) {
-    return <p className="center">Loading...</p>;
+    return (
+      <Fragment>
+        {pageHeadData}
+        <p className="center">Loading...</p>;
+      </Fragment>
+    );
   }
 
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
   const numYear = +filteredYear;
   const numMonth = +filteredMonth;
+
+  pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        name="description"
+        content={`All events for ${numMonth}/${numYear}.`}
+      />
+    </Head>
+  );
 
   if (
     isNaN(numMonth) ||
@@ -52,6 +74,7 @@ function FilterEventPage(props) {
   ) {
     return (
       <Fragment>
+        {pageHeadData}
         <ErrorAlert>
           <p>Invalid filter. Please adjust your filter!</p>
         </ErrorAlert>
@@ -73,6 +96,7 @@ function FilterEventPage(props) {
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
       <Fragment>
+        {pageHeadData}
         <ErrorAlert>
           <p>No events found for the chosen filter!</p>
         </ErrorAlert>
@@ -87,13 +111,7 @@ function FilterEventPage(props) {
 
   return (
     <Fragment>
-      <Head>
-        <title>Filtered Events</title>
-        <meta
-          name="description"
-          content={`All events for ${numMonth}/${numYear}.`}
-        />
-      </Head>
+      {pageHeadData}
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
