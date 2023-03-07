@@ -59,6 +59,7 @@ export async function getStaticPaths() {
   return {
     paths: paths,
     fallback: true,
+    //fallback use {true} to render not SSR page, {false} to set all page pre-render
   };
 }
 
