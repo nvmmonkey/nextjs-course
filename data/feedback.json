@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "2023-03-07T19:15:30.371Z",
+    "email": "test1@test1.com",
+    "text": "does it wokr?"
+  },
+  {
+    "id": "2023-03-07T19:16:30.059Z",
+    "email": "test2@test.com",
+    "text": "does it wokr? x2?"
+  }
+]
