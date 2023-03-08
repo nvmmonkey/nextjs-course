@@ -1,6 +1,16 @@
 import fs from "fs";
 import path from "path";
 
+function buildFeedbackPath() {
+  return path.join(process.cwd(), "data", "feedback.json"); //create path for the feedback.json
+}
+
+function extractFeedback(filePath) {
+  const fileData = fs.readFileSync(filePath); //read the current data on the file for later updata
+  const data = JSON.parse(fileData); //json and parse the filedata
+  return data;
+}
+
 function handler(req, res) {
   if (req.method === "POST") {
     const email = req.body.email;
@@ -14,9 +24,8 @@ function handler(req, res) {
     };
 
     //store the data in a DB/file
-    const filePath = path.join(process.cwd(), "data", "feedback.json"); //create path for the feedback.json
-    const fileData = fs.readFileSync(filePath); //read the current data on the file for later updata
-    const data = JSON.parse(fileData); //json and parse the filedata
+    const filePath = buildFeedbackPath();
+    const data = extractFeedback(filePath);
 
     data.push(newFeedback); //make the json file starts as an ARRAY ** with [] inside **, push update the data
     fs.writeFileSync(filePath, JSON.stringify(data)); //updata & write the actual string data
@@ -24,9 +33,10 @@ function handler(req, res) {
       .status(201)
       .json({ message: "Successfully Sent!", feedback: newFeedback }); //send back Status code 201, and data we updated"s
   } else {
-    res.status(200).json({
-      message: "This works!",
-    });
+    const filePath = buildFeedbackPath(); 
+    const data = extractFeedback(filePath);
+
+    res.status(200).json({ feedback: data });
   }
 }
 
