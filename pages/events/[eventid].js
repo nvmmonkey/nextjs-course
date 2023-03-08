@@ -9,6 +9,7 @@ import {
   getFeaturedEvents,
 } from "../../components/helper/api-utils";
 import ErrorAlert from "../../components/ui/error-alert";
+import Comments from "../../components/input/comments";
 
 function EventDetailPage(props) {
   // const router = useRouter();
@@ -38,6 +39,7 @@ function EventDetailPage(props) {
           imageAlt={event.title}
         />
         <EventContent>{event.description}</EventContent>
+        <Comments eventId={event.id} />
       </Fragment>
     </div>
   );
