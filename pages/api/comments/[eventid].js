@@ -51,7 +51,7 @@ async function handler(req, res) {
     mongoose.connect(url, { useNewUrlParser: true });
     console.log("Connected DB!");
 
-    const document = models.Comment.find({ eventId: eventId }).sort({
+    const document = await models.Comment.find({ eventId: eventId }).sort({
       _id: -1,
     });
 
