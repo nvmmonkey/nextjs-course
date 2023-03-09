@@ -22,7 +22,7 @@ function NewsletterRegistration() {
         if (data) {
           emailInputRef.current.value = "";
           alert("Sent!");
-          console.log(data);
+          // console.log(data);
         }
       });
 

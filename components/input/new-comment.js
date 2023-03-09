@@ -5,44 +5,15 @@ import classes from "./new-comment.module.css";
 function NewComment(props) {
   const [isInvalid, setIsInvalid] = useState(false);
 
-  const router = useRouter();
-
   const emailInputRef = useRef();
   const nameInputRef = useRef();
   const commentInputRef = useRef();
 
   function sendCommentHandler(event) {
     event.preventDefault();
-
-    const eventId = router.query.eventid;
     const enteredEmail = emailInputRef.current.value;
     const enteredName = nameInputRef.current.value;
     const enteredComment = commentInputRef.current.value;
-
-    const reqBody = {
-      eventId: eventId,
-      email: enteredEmail,
-      name: enteredName,
-      comment: enteredComment,
-    };
-
-    fetch("/api/comments", {
-      method: "POST",
-      body: JSON.stringify(reqBody),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data) {
-          emailInputRef.current.value = "";
-          nameInputRef.current.value = "";
-          commentInputRef.current.value = "";
-          alert("Sent!");
-          console.log(data);
-        }
-      });
 
     if (
       !enteredEmail ||
@@ -60,7 +31,7 @@ function NewComment(props) {
     props.onAddComment({
       email: enteredEmail,
       name: enteredName,
-      text: enteredComment,
+      comment: enteredComment,
     });
   }
 

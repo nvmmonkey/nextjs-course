@@ -1,21 +1,24 @@
-import classes from './comment-list.module.css';
+import classes from "./comment-list.module.css";
 
-function CommentList() {
+function CommentList(props) {
+  const { items } = props;
+
+  if (!items || items.length === 0) {
+    return <p>No Comments!</p>;
+  }
   return (
     <ul className={classes.comments}>
-      {/* Render list of comments - fetched from API */}
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
-      <li>
-        <p>My comment is amazing!</p>
-        <div>
-          By <address>Maximilian</address>
-        </div>
-      </li>
+      {
+        /* Render list of comments - fetched from API */
+        items.map((item) => (
+          <li key={item._id}>
+            <p>{item.comment}</p>
+            <div>
+              By <address>{item.name}</address>
+            </div>
+          </li>
+        ))
+      }
     </ul>
   );
 }
