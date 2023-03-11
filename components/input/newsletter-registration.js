@@ -21,7 +21,6 @@ function NewsletterRegistration() {
       .then((data) => {
         if (data) {
           emailInputRef.current.value = "";
-          alert("Sent!");
           // console.log(data);
         }
       });

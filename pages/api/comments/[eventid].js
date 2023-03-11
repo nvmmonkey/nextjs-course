@@ -1,10 +1,20 @@
-import mongoose from "mongoose";
-import { Schema, model, models } from "mongoose";
 import Comment from "../../../models/CommentModel";
-import { connectMongoDB } from "../../../components/helper/MongoConnect";
+import {
+  connectMongoDB,
+  insertComment,
+  findDocuments,
+} from "../../../components/helper/db-utils";
 
 async function handler(req, res) {
   const eventId = req.query.eventid;
+
+  try {
+    connectMongoDB();
+    console.log("Connected DB!");
+  } catch (err) {
+    res.status(500).json("Fail connecting DB!");
+    return;
+  }
 
   if (req.method === "POST") {
     const { name, email, comment } = req.body;
@@ -20,19 +30,6 @@ async function handler(req, res) {
       return;
     }
 
-    connectMongoDB();
-    console.log("Connected DB!");
-
-    // const commentsSchema = {
-    //   eventId: String,
-    //   name: String,
-    //   email: String,
-    //   comment: String,
-    // };
-
-    // const Comment =
-    //   mongoose.models.Comment || mongoose.model("Comment", commentsSchema); //NextJS required to check if duplicated models
-
     const newComment = new Comment({
       eventId: eventId,
       name: name,
@@ -40,24 +37,33 @@ async function handler(req, res) {
       comment: comment,
     });
 
-    Comment.create(newComment);
-    console.log("Comment Added!");
-
-    return res
-      .status(201)
-      .json({ message: "Successfully Comment!", newComment: newComment });
+    try {
+      insertComment(newComment);
+      return res
+        .status(201)
+        .json({ message: "Added Comment!", newComment: newComment });
+    } catch (err) {
+      console.log(err.message);
+      res
+        .status(500)
+        .json({ message: "Inserting Comment Failed!", error: err.message });
+      return;
+    }
   }
 
   if (req.method === "GET") {
-    connectMongoDB();
-    console.log("Connected DB!");
-
-    const document = await Comment.find({
-      eventId: eventId,
-    }).sort({
-      _id: -1,
-    });
-    return res.status(200).json({ comments: document });
+    try {
+      connectMongoDB();
+      const document = await findDocuments(
+        Comment,
+        { eventId: eventId },
+        { _id: -1 }
+      );
+      res.status(200).json({ comments: document });
+    } catch (err) {
+      res.status(500).json({ message: "Failed fetching comments!" });
+      return;
+    }
   }
 }
 
