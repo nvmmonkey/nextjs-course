@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { Schema, model, models } from "mongoose";
+import Comment from "../../../models/CommentModel";
+import { connectMongoDB } from "../../../components/helper/MongoConnect";
 
 async function handler(req, res) {
   const eventId = req.query.eventid;
@@ -18,18 +20,18 @@ async function handler(req, res) {
       return;
     }
 
-    const url = `mongodb+srv://kit1:${process.env.mongoAPI}@cluster0.dc50xli.mongodb.net/events`;
-    mongoose.connect(url, { useNewUrlParser: true });
+    connectMongoDB();
     console.log("Connected DB!");
 
-    const commentsSchema = {
-      eventId: String,
-      name: String,
-      email: String,
-      comment: String,
-    };
+    // const commentsSchema = {
+    //   eventId: String,
+    //   name: String,
+    //   email: String,
+    //   comment: String,
+    // };
 
-    const Comment = models.Comment || mongoose.model("Comment", commentsSchema); //NextJS required to check if duplicated models
+    // const Comment =
+    //   mongoose.models.Comment || mongoose.model("Comment", commentsSchema); //NextJS required to check if duplicated models
 
     const newComment = new Comment({
       eventId: eventId,
@@ -38,7 +40,7 @@ async function handler(req, res) {
       comment: comment,
     });
 
-    newComment.save();
+    Comment.create(newComment);
     console.log("Comment Added!");
 
     return res
@@ -47,14 +49,14 @@ async function handler(req, res) {
   }
 
   if (req.method === "GET") {
-    const url = `mongodb+srv://kit1:${process.env.mongoAPI}@cluster0.dc50xli.mongodb.net/events`;
-    mongoose.connect(url, { useNewUrlParser: true });
+    connectMongoDB();
     console.log("Connected DB!");
 
-    const document = await models.Comment.find({ eventId: eventId }).sort({
+    const document = await Comment.find({
+      eventId: eventId,
+    }).sort({
       _id: -1,
     });
-
     return res.status(200).json({ comments: document });
   }
 }

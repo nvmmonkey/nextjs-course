@@ -1,7 +1,24 @@
 import mongoose from "mongoose";
 import { Schema, model, models } from "mongoose";
+import User from "../../../models/UserModel";
+import { connectMongoDB } from "../../../components/helper/MongoConnect";
 
-async function handler(req, res) {
+async function insertUser(email) {
+  // const usersSchema = {
+  //   id: String,
+  //   email: String,
+  // };
+
+  // const User = mongoose.models.User || mongoose.model("User", usersSchema); //NextJS required to check if duplicated models
+  const newsletter = new User({
+    id: new Date().toISOString(),
+    email: email,
+  });
+
+  newsletter.save();
+}
+
+function handler(req, res) {
   if (req.method === "POST") {
     const email = req.body.email;
 
@@ -10,27 +27,20 @@ async function handler(req, res) {
       return;
     }
 
-    const url = `mongodb+srv://kit1:${process.env.mongoAPI}@cluster0.dc50xli.mongodb.net/newslettersDB`;
+    try {
+      connectMongoDB();
+    } catch (err) {
+      res.status(500).json({ message: "fail connect!" });
+    }
 
-    mongoose.connect(url, { useNewUrlParser: true });
-    console.log("Connected DB!");
+    try {
+      insertUser(email);
+    } catch (err) {
+      res.status(500).json({ message: "Fail inserting data to DB!" });
+      return;
+    }
 
-    const usersSchema = {
-      id: String,
-      email: String,
-    };
-
-    const User = models.User || mongoose.model("User", usersSchema); //NextJS required to check if duplicated models
-    const newsletter = new User({
-      id: new Date().toISOString(),
-      email: email,
-    });
-
-    newsletter.save() && console.log("Item Added at " + newsletter.id);
-
-    return res
-      .status(201)
-      .json({ message: "Successfully Signup!", newsletter: newsletter });
+    return res.status(201).json({ message: "Successfully Signup!" });
   }
 }
 
