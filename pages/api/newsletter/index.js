@@ -3,7 +3,7 @@ import {
   insertUser,
 } from "../../../components/helper/db-utils";
 
-function handler(req, res) {
+async function handler(req, res) {
   if (req.method === "POST") {
     const email = req.body.email;
 
@@ -13,15 +13,16 @@ function handler(req, res) {
     }
 
     try {
-      connectMongoDB();
+      await connectMongoDB();
     } catch (err) {
       res.status(500).json({ message: "Failing connecting to DB!" });
       return;
     }
 
     try {
-      insertUser(email);
-      return res.status(201).json({ message: "Signup done!" });
+      await insertUser(email);
+      res.status(201).json({ message: "Signup done!" });
+      return;
     } catch (err) {
       res.status(500).json({ message: "Fail inserting data to DB!" });
       return;

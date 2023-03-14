@@ -9,7 +9,7 @@ export async function connectMongoDB() {
     return mongoose.connection.asPromise();
   }
 
-  return await mongoose.connect(url, { useNewUrlParser: true });
+  await mongoose.connect(url, { useNewUrlParser: true });
 }
 
 export async function insertUser(email) {
@@ -18,7 +18,7 @@ export async function insertUser(email) {
     email: email,
   });
 
-  newsletter.save();
+  await newsletter.save();
 }
 
 export async function insertComment(newComment) {
