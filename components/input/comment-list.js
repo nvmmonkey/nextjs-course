@@ -3,6 +3,10 @@ import classes from "./comment-list.module.css";
 function CommentList(props) {
   const { items } = props;
 
+  if (items === undefined) {
+    return <p>Error fetching comments!</p>;
+  }
+
   if (items.length === 0 || !items) {
     return <p>No Comments!</p>;
   }

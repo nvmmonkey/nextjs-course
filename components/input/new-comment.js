@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
+import NotificationContext from "../../store/notification-context";
 import classes from "./new-comment.module.css";
 
 function NewComment(props) {

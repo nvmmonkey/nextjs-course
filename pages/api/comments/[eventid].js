@@ -9,7 +9,7 @@ async function handler(req, res) {
   const eventId = req.query.eventid;
 
   try {
-    connectMongoDB();
+    await connectMongoDB();
     console.log("Connected DB!");
   } catch (err) {
     res.status(500).json("Fail connecting DB!");
@@ -17,7 +17,7 @@ async function handler(req, res) {
   }
 
   if (req.method === "POST") {
-    const { name, email, comment } = req.body;
+    const { name, email, comment } = req.body; //extract from POST submit body props
 
     if (
       !name ||
@@ -38,7 +38,7 @@ async function handler(req, res) {
     });
 
     try {
-      insertComment(newComment);
+      await insertComment(newComment);
       return res
         .status(201)
         .json({ message: "Added Comment!", newComment: newComment });
@@ -53,13 +53,13 @@ async function handler(req, res) {
 
   if (req.method === "GET") {
     try {
-      connectMongoDB();
+      await connectMongoDB();
       const document = await findDocuments(
         Comment,
         { eventId: eventId },
         { _id: -1 }
       );
-      res.status(200).json({ comments: document });
+      return res.status(200).json({ comments: document });
     } catch (err) {
       res.status(500).json({ message: "Failed fetching comments!" });
       return;
