@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import NextAuth from "next-auth/next";
+import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 import { verifyPassword } from "../../../helper/auth-utils";
-import { ConnectMongoDB } from "../../../helper/db-utils";
+import { ConnectMongoDB, findUser } from "../../../helper/db-utils";
 
 export default NextAuth({
   session: {
@@ -12,7 +12,7 @@ export default NextAuth({
     Providers.Credentials({
       async authorize(credentials) {
         try {
-          await ConnectMongoDB;
+          await ConnectMongoDB();
         } catch (error) {
           throw new Error("Failing connecting to user DB!");
         }
