@@ -19,3 +19,9 @@ export async function insertUser(newUser) {
 
   await user.save();
 }
+
+export async function findUser(userEmail) {
+  const exitingUser = await User.findOne({ email: userEmail });
+
+  return exitingUser;
+}

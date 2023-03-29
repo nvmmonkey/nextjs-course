@@ -1,5 +1,6 @@
+import mongoose from "mongoose";
 import { hashPassword } from "../../../helper/auth-utils";
-import { ConnectMongoDB, insertUser } from "../../../helper/db-utils";
+import { ConnectMongoDB, findUser, insertUser } from "../../../helper/db-utils";
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -36,12 +37,21 @@ async function handler(req, res) {
     return;
   }
 
+  const exitingUser = await findUser(email);
+  if (exitingUser) {
+    res.status(422).json({ message: "User exists already!" });
+    mongoose.connection.close();
+    return;
+  }
+
   try {
     await insertUser(newUser);
     res.status(201).json({ message: "Successfully signup!" });
+    mongoose.connection.close();
     return;
   } catch (error) {
     res.status(500).json({ message: "Error signning up!" });
+    mongoose.connection.close()
     return;
   }
 }

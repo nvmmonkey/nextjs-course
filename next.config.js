@@ -5,7 +5,7 @@ module.exports = (phase) => {
     return {
       env: {
         mongoAPI: "zAQ12bTECDBmh95B",
-        mongodb_database: "users-dev",
+        mongodb_database: "users",
       },
     };
   }
