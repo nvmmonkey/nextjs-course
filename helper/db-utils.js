@@ -27,13 +27,5 @@ export async function findUser(userEmail) {
 }
 
 export async function updatePassword(userEmail, newPassword) {
-  await User.updateOne(
-    { email: userEmail },
-    { password: newPassword },
-    (err) => {
-      if (err) {
-        return err;
-      }
-    }
-  );
+  await User.updateOne({ email: userEmail }, { password: newPassword });
 }

@@ -9,7 +9,7 @@ import {
 
 async function handler(req, res) {
   //extract old/new pwd user entered
-  if (req.method === "PATCH") {
+  if (req.method !== "PATCH") {
     return;
   }
 
